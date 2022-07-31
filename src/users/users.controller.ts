@@ -6,6 +6,7 @@ import {User} from "./user.entity";
 @Controller('api/user')
 export class UsersController {
     private logger = new Logger();
+
     constructor(private usersService: UsersService) {
     }
 
@@ -34,7 +35,9 @@ export class UsersController {
      */
     @Get('/:id')
     async findOnd(@Param("id") id: number): Promise<User> {
+
         let findUser = await this.usersService.findOne(id);
+
         return Object.assign({
             data: findUser,
             statusCode: 200,
@@ -62,7 +65,9 @@ export class UsersController {
      */
     @Patch('/:id')
     async updateUser(@Param('id') id: number, @Body() user: User) {
+
         await this.usersService.updateUser(id, user);
+
         return Object.assign({
             data: {...user},
             statusCode: 200,
@@ -75,7 +80,9 @@ export class UsersController {
      */
     @Delete("/:id")
     async deleteUser(@Param('id') id: number) {
+
         await this.usersService.deleteUser(id);
+
         return Object.assign({
             data: {userId: id},
             statusCode: 200,

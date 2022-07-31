@@ -21,6 +21,24 @@ export class UsersService {
      * 유저 조회
      */
     findOne(id: number): Promise<User> {
+
+        /**
+         * findOne() 사용
+         */
+
+        /**
+         *  return this.userRepository.findOne({
+         *             where: {
+         *                 id,
+         *             },
+         *         });
+         */
+
+
+        /**
+         * findOneBy() 사용
+         */
+
         return this.userRepository.findOneBy({id: id});
     }
 
@@ -47,7 +65,7 @@ export class UsersService {
     /**
      * 회원 삭제
      */
-    async deleteUser(id:number):Promise<void> {
+    async deleteUser(id: number): Promise<void> {
         await this.userRepository.delete(id);
     }
 }
