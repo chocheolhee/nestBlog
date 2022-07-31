@@ -1,10 +1,11 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Logger, Param, Patch, Post} from '@nestjs/common';
 import {UserDto} from './dto/userDto';
 import {UsersService} from "./users.service";
 import {User} from "./user.entity";
 
 @Controller('api/user')
 export class UsersController {
+    private logger = new Logger();
     constructor(private usersService: UsersService) {
     }
 
@@ -14,6 +15,8 @@ export class UsersController {
     @Get()
     async findAll(): Promise<User[]> {
         const userList = await this.usersService.findAll();
+
+        this.logger.verbose('controller findAll()');
 
         /**
          * return 부분은 별도의 exception 만든 후 @Res() 사용해서 리펙토링 할 계획
@@ -44,7 +47,9 @@ export class UsersController {
      */
     @Post('/register')
     async create(@Body() userDto: UserDto) {
+
         await this.usersService.register(userDto);
+
         return Object.assign({
             data: {...userDto},
             statusCode: 200,
