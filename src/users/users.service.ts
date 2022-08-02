@@ -3,12 +3,16 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {User} from "./user.entity";
 import {Repository} from "typeorm";
 import {UserDto} from './dto/userDto';
+import * as uuid from 'uuid';
+
 
 @Injectable()
 export class UsersService {
     constructor(@InjectRepository(User)
-                private userRepository: Repository<User>) {
-    }
+                private userRepository: Repository<User>,
+                ) {}
+
+
 
     /**
      * 전체 회원 조회
@@ -46,7 +50,7 @@ export class UsersService {
      * 회원 저장
      */
     async register(userDto: UserDto): Promise<void> {
-        await this.userRepository.save(userDto)
+        await this.userRepository.save(userDto);
     }
 
     /**
@@ -68,4 +72,6 @@ export class UsersService {
     async deleteUser(id: number): Promise<void> {
         await this.userRepository.delete(id);
     }
+
+
 }
