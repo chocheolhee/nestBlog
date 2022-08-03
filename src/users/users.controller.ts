@@ -28,10 +28,6 @@ export class UsersController {
      */
     @Get()
     async findAll(): Promise<User[]> {
-        /**
-         * return 부분은 별도의 exception 만든 후 @Res() 사용해서 리펙토링 할 계획
-         * 일단 임시로 Object 만들어서 반환함
-         */
         return await this.usersService.findAll();
     }
 

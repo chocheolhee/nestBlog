@@ -34,6 +34,12 @@ export class UsersService {
      * 회원 저장
      */
     async register(userDto: UserDto): Promise<void> {
+        const isEmail = await this.userRepository.findOneBy({email: userDto.email});
+
+        if (!(isEmail === null)) {
+            throw new NotFoundException('이미 회원가입된 이메일입니다.')
+        }
+
         await this.userRepository.save(userDto);
     }
 
