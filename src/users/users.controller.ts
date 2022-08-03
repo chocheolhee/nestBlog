@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Logger, Param, Patch, Post, UseFilters} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Patch, Post, UseFilters} from '@nestjs/common';
 import {UserDto} from './dto/userDto';
 import {UsersService} from "./users.service";
 import {User} from "./user.entity";
@@ -36,7 +36,7 @@ export class UsersController {
      * 유저 조회
      */
     @Get('/:id')
-    async findOnd(@Param("id") id: number): Promise<User> {
+    async findOnd(@Param("id", ParseIntPipe) id: number): Promise<User> {
 
         let findUser = await this.usersService.findOne(id);
 
@@ -66,7 +66,7 @@ export class UsersController {
      * 회원 수정
      */
     @Patch('/:id')
-    async updateUser(@Param('id') id: number, @Body() user: User) {
+    async updateUser(@Param('id', ParseIntPipe) id: number, @Body() user: User) {
 
         await this.usersService.updateUser(id, user);
 
@@ -81,7 +81,7 @@ export class UsersController {
      * 회원 삭제
      */
     @Delete("/:id")
-    async deleteUser(@Param('id') id: number) {
+    async deleteUser(@Param('id', ParseIntPipe) id: number) {
 
         await this.usersService.deleteUser(id);
 
