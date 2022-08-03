@@ -1,14 +1,25 @@
-import {Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Patch, Post, UseFilters} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get, NotFoundException,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Post,
+    UseFilters,
+    UseInterceptors
+} from '@nestjs/common';
 import {UserDto} from './dto/userDto';
 import {UsersService} from "./users.service";
 import {User} from "./user.entity";
-import {HttpExceptionFilter} from "../exception/http-exception.filter";
+import {HttpExceptionFilter} from "../common/exception/http-exception.filter";
+import {SuccessInterceptor} from "../common/interceptor/success.interceptor";
 
 @Controller('api/user')
 @UseFilters(HttpExceptionFilter)
+@UseInterceptors(SuccessInterceptor)
 export class UsersController {
-    private logger = new Logger();
-
     constructor(private usersService: UsersService) {
     }
 
@@ -17,19 +28,11 @@ export class UsersController {
      */
     @Get()
     async findAll(): Promise<User[]> {
-        const userList = await this.usersService.findAll();
-
-        this.logger.verbose('controller findAll()');
-
         /**
          * return 부분은 별도의 exception 만든 후 @Res() 사용해서 리펙토링 할 계획
          * 일단 임시로 Object 만들어서 반환함
          */
-        return Object.assign({
-            data: userList,
-            statusCode: 200,
-            statusMsg: `data successfully`,
-        });
+        return await this.usersService.findAll();
     }
 
     /**
@@ -37,14 +40,7 @@ export class UsersController {
      */
     @Get('/:id')
     async findOnd(@Param("id", ParseIntPipe) id: number): Promise<User> {
-
-        let findUser = await this.usersService.findOne(id);
-
-        return Object.assign({
-            data: findUser,
-            statusCode: 200,
-            statusMsg: `유저 조회 성공`,
-        })
+        return await this.usersService.findOne(id);
     }
 
     /**
@@ -52,14 +48,7 @@ export class UsersController {
      */
     @Post('/register')
     async create(@Body() userDto: UserDto) {
-
-        await this.usersService.register(userDto);
-
-        return Object.assign({
-            data: {...userDto},
-            statusCode: 200,
-            statusMsg: `saved successfully`,
-        });
+        return await this.usersService.register(userDto);
     }
 
     /**
@@ -67,14 +56,7 @@ export class UsersController {
      */
     @Patch('/:id')
     async updateUser(@Param('id', ParseIntPipe) id: number, @Body() user: User) {
-
-        await this.usersService.updateUser(id, user);
-
-        return Object.assign({
-            data: {...user},
-            statusCode: 200,
-            statusMsg: `update successfully`,
-        })
+        return await this.usersService.updateUser(id, user);
     }
 
     /**
@@ -82,13 +64,6 @@ export class UsersController {
      */
     @Delete("/:id")
     async deleteUser(@Param('id', ParseIntPipe) id: number) {
-
-        await this.usersService.deleteUser(id);
-
-        return Object.assign({
-            data: {userId: id},
-            statusCode: 200,
-            statusMsg: `delete successfully`,
-        })
+        return await this.usersService.deleteUser(id);
     }
 }
