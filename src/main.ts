@@ -2,11 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as config from 'config';
 import {Logger, ValidationPipe} from "@nestjs/common";
+import {HttpExceptionFilter} from "./exception/http-exception.filter";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   // Root config 폴더에서 설정파일 적용
   // const serverConfig = config.get('server');

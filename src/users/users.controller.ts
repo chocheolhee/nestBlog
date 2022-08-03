@@ -1,9 +1,11 @@
-import {Body, Controller, Delete, Get, Logger, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Logger, Param, Patch, Post, UseFilters} from '@nestjs/common';
 import {UserDto} from './dto/userDto';
 import {UsersService} from "./users.service";
 import {User} from "./user.entity";
+import {HttpExceptionFilter} from "../exception/http-exception.filter";
 
 @Controller('api/user')
+@UseFilters(HttpExceptionFilter)
 export class UsersController {
     private logger = new Logger();
 
