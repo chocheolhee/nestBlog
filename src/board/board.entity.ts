@@ -1,20 +1,15 @@
 import {Column, Entity, PrimaryGeneratedColumn, Unique} from "typeorm";
 
 @Entity()
-export class User{
+export class Board {
 
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({type: 'varchar', nullable: false})
-    userName: string;
-
-    @Column({type: 'varchar', unique: true, nullable: false})
-    email: string;
+    title: string;
 
     @Column({type: 'varchar', nullable: false})
-    password: string;
+    content: string;
 
-    @Column({type: 'boolean', default: true})
-    isActive: boolean;
 }
