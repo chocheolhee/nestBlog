@@ -15,12 +15,16 @@ import {UsersService} from "./users.service";
 import {User} from "./user.entity";
 import {HttpExceptionFilter} from "../common/exception/http-exception.filter";
 import {SuccessInterceptor} from "../common/interceptor/success.interceptor";
+import {AuthService} from "../auth/auth.service";
+import {LoginRequestDto} from "../auth/dto/login.request.dto";
 
 @Controller('api/user')
 @UseFilters(HttpExceptionFilter)
 @UseInterceptors(SuccessInterceptor)
 export class UsersController {
-    constructor(private usersService: UsersService) {
+    constructor(private usersService: UsersService,
+                private authService: AuthService
+    ) {
     }
 
     /**
@@ -61,5 +65,13 @@ export class UsersController {
     @Delete("/:id")
     async deleteUser(@Param('id', ParseIntPipe) id: number) {
         return await this.usersService.deleteUser(id);
+    }
+
+    /**
+     * 로그인
+     */
+    @Post("/login")
+    async login(@Body() data: LoginRequestDto) {
+        return await this.authService.jwtLogin(data);
     }
 }
