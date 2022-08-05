@@ -1,11 +1,12 @@
-import {Module} from '@nestjs/common';
+import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {UsersModule} from './users/users.module';
 import {typeormConfig} from './configs/typeorm.config';
 import {ConfigModule} from "@nestjs/config";
-import { AuthModule } from './auth/auth.module';
-import { BoardController } from './board/board.controller';
-import { BoardModule } from './board/board.module';
+import {AuthModule} from './auth/auth.module';
+import {BoardController} from './board/board.controller';
+import {BoardModule} from './board/board.module';
+import {LoggerMiddleware} from "./common/middleware/logger.middleware";
 
 
 @Module({
@@ -37,5 +38,10 @@ import { BoardModule } from './board/board.module';
     controllers: [],
     providers: [],
 })
-export class AppModule {
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(LoggerMiddleware)
+            .forRoutes('*');
+    }
 }
