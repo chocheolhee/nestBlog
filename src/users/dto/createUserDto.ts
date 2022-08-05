@@ -1,6 +1,6 @@
 import {IsEmail, IsNotEmpty, IsString} from "class-validator";
 
-export class UserDto{
+export class CreateUserDto {
 
     @IsNotEmpty({message:'이름을 작성해주세요.'})
     userName: string;

@@ -2,7 +2,7 @@ import {Injectable, NotFoundException, UnauthorizedException} from '@nestjs/comm
 import {InjectRepository} from "@nestjs/typeorm";
 import {User} from "./user.entity";
 import {Repository} from "typeorm";
-import {UserDto} from './dto/userDto';
+import {CreateUserDto} from './dto/createUserDto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -34,7 +34,7 @@ export class UsersService {
     /**
      * 회원 저장
      */
-    async register(userDto: UserDto): Promise<User> {
+    async register(userDto: CreateUserDto): Promise<User> {
         const isEmail = await this.userRepository.findOneBy({email: userDto.email});
 
         if (!(isEmail === null)) {
@@ -49,7 +49,7 @@ export class UsersService {
             password: hashedPassword,
         });
 
-       return  await this.userRepository.save(saveUser);
+        return await this.userRepository.save(saveUser);
     }
 
     /**
@@ -59,7 +59,7 @@ export class UsersService {
         const findUser = await this.userRepository.findOneBy({id: id});
 
         if (!findUser) {
-            throw new NotFoundException(`Can't find Board with id: ${id}`)
+            throw new NotFoundException(`Can't find User with id: ${id}`)
         }
 
         await this.userRepository.update(id, user);
@@ -69,6 +69,11 @@ export class UsersService {
      * 회원 삭제
      */
     async deleteUser(id: number): Promise<void> {
+        const findUser = await this.userRepository.findOneBy({id: id});
+
+        if (!findUser) {
+            throw new NotFoundException(`Can't find User with id: ${id}`)
+        }
         await this.userRepository.delete(id);
     }
 }

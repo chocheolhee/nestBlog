@@ -10,7 +10,7 @@ import {
     UseFilters,
     UseInterceptors
 } from '@nestjs/common';
-import {UserDto} from './dto/userDto';
+import {CreateUserDto} from './dto/createUserDto';
 import {UsersService} from "./users.service";
 import {User} from "./user.entity";
 import {HttpExceptionFilter} from "../common/exception/http-exception.filter";
@@ -39,7 +39,7 @@ export class UsersController {
      * 유저 조회
      */
     @Get('/:id')
-    async findOnd(@Param("id", ParseIntPipe) id: number): Promise<User> {
+    async findOne(@Param("id", ParseIntPipe) id: number): Promise<User> {
         return await this.usersService.findOne(id);
     }
 
@@ -47,7 +47,7 @@ export class UsersController {
      * 회원 저장
      */
     @Post('/register')
-    async create(@Body() userDto: UserDto) {
+    async create(@Body() userDto: CreateUserDto) {
         return await this.usersService.register(userDto);
     }
 

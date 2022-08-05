@@ -10,11 +10,13 @@ import {
     UseFilters,
     UseInterceptors
 } from '@nestjs/common';
-import {HttpExceptionFilter} from "../common/exception/http-exception.filter";
 import {SuccessInterceptor} from "../common/interceptor/success.interceptor";
 import {AuthService} from "../auth/auth.service";
 import {BoardService} from "./board.service";
 import {Board} from "./board.entity";
+import {CreateBoardDto} from "./dto/createBoardDto";
+import {HttpExceptionFilter} from "../common/exception/http-exception.filter";
+import {UpdateBoardDto} from "./dto/updateBoardDto";
 
 @Controller('api/board')
 @UseFilters(HttpExceptionFilter)
@@ -30,31 +32,31 @@ export class BoardController {
      */
     @Get()
     async findAll(): Promise<Board[]> {
-        return
+        return await this.boardService.findAll();
     }
 
     /**
      * 게시글 단건 조회
      */
     @Get('/:id')
-    async findOnd(@Param("id", ParseIntPipe) id: number): Promise<Board> {
-        return
+    async findOne(@Param("id", ParseIntPipe) id: number): Promise<Board> {
+        return await this.boardService.findOne(id);
     }
 
     /**
      * 게시글 저장
      */
     @Post('/register')
-    async create(@Body() boardDto: Board) {
-        return
+    async create(@Body() boardDto: CreateBoardDto) {
+        return await this.boardService.register(boardDto);
     }
 
     /**
      * 게시글 수정
      */
     @Patch('/:id')
-    async updateBoard(@Param('id', ParseIntPipe) id: number, @Body() board: Board) {
-        return
+    async updateBoard(@Param('id', ParseIntPipe) id: number, @Body() updateBoardDto: UpdateBoardDto) {
+        return await this.boardService.updateBoard(id, updateBoardDto);
     }
 
     /**
@@ -62,7 +64,7 @@ export class BoardController {
      */
     @Delete("/:id")
     async deleteBoard(@Param('id', ParseIntPipe) id: number) {
-        return
+        return await this.boardService.deleteBoard(id);
     }
 
 }

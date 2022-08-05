@@ -9,7 +9,10 @@ export class Board {
     @Column({type: 'varchar', nullable: false})
     title: string;
 
-    @Column({type: 'varchar', nullable: false})
+    @Column({type: 'varchar'})
+    description: string;
+
+    @Column({type: 'varchar'})
     content: string;
 
 }
