@@ -5,6 +5,7 @@ import {Repository} from "typeorm";
 import {LoginRequestDto} from "./dto/login.request.dto";
 import * as bcrypt from 'bcrypt';
 import {JwtService} from "@nestjs/jwt";
+import {Payload} from "./jwt/jwt.payload";
 
 @Injectable()
 export class AuthService {
@@ -44,4 +45,6 @@ export class AuthService {
             token: this.jwtService.sign(payload, {secret: process.env.JWT_SECRET}),
         }
     }
+
+
 }

@@ -5,16 +5,17 @@ import {Payload} from "./jwt.payload";
 import {InjectRepository} from "@nestjs/typeorm";
 import {User} from "../../users/user.entity";
 import {Repository} from "typeorm";
+import {jwtExtractorFromCookies} from "../../common/utils/jwtExtractorFromCookies";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>
-
     ) {
         super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            jwtFromRequest:ExtractJwt.fromExtractors([jwtExtractorFromCookies]),
             secretOrKey: process.env.JWT_SECRET,
             ignoreExpiration: false,
         });

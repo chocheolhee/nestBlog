@@ -10,7 +10,7 @@ import {UsersModule} from "../users/users.module";
 @Module({
     imports: [
         TypeOrmModule.forFeature([User]),
-        PassportModule.register({defaultStrategy: 'jwt', session: false}),
+        PassportModule.register({defaultStrategy: 'jwt', session: true}),
         JwtModule.register({
             secret: process.env.JWT_SECRET,
             signOptions: {expiresIn: '1y'},

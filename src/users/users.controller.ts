@@ -2,12 +2,12 @@ import {
     Body,
     Controller,
     Delete,
-    Get, Logger, NotFoundException,
+    Get,
     Param,
     ParseIntPipe,
     Patch,
-    Post, Req, Res,
-    UseFilters, UseGuards,
+    Post, Res,
+    UseFilters,
     UseInterceptors
 } from '@nestjs/common';
 import {CreateUserDto} from './dto/createUserDto';
@@ -17,8 +17,7 @@ import {HttpExceptionFilter} from "../common/exception/http-exception.filter";
 import {SuccessInterceptor} from "../common/interceptor/success.interceptor";
 import {AuthService} from "../auth/auth.service";
 import {LoginRequestDto} from "../auth/dto/login.request.dto";
-import {request, Request, Response} from "express";
-import {JwtAuthGuard} from "../auth/jwt/jwt.guard";
+import {Response} from 'express'
 
 @Controller('api/user')
 @UseFilters(HttpExceptionFilter)
@@ -74,34 +73,20 @@ export class UsersController {
      * 로그인
      */
     @Post("/login")
-    async login(@Body() data: LoginRequestDto) {
-        return await this.authService.validateUser(data);
+    async login(@Body() data: LoginRequestDto,
+                @Res({passthrough: true}) res: Response
+    ) {
+        // Bearer Token jwt
+        // return await this.authService.validateUser(data);
+        const jwt = await this.authService.validateUser(data)
+        res.cookie('jwt', jwt.token, {httpOnly: true})
+        return jwt;
 
-        /**
-         * Todo jwt Cookie 적용
-         */
-        // const jwt = await this.authService.validateUser(data);
-        // res.setHeader('Authorization', 'Bearer ' + jwt.token);
-        // res.cookie('jwt', jwt.token, {
-        //     httpOnly: true,
-        //     maxAge: 24 * 60 * 60 * 1000 //1 day
-        // });
-        //
-        // return res.send({
-        //     message: 'success'
-        // })
+
     }
 
-    /**
-     * Todo 로그아웃
-     */
-    // @Post('/logout')
-    // logout(@Req() req: Request, @Res() res: Response): any {
-    //     res.cookie('jwt', '', {
-    //         maxAge: 0
-    //     })
-    //     return res.send({
-    //         message: 'success'
-    //     })
-    // }
+    @Post('/logout')
+    async logOut(@Res({passthrough: true}) response: Response) {
+        response.clearCookie('jwt')
+    }
 }

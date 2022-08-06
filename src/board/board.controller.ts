@@ -52,7 +52,7 @@ export class BoardController {
      */
     @UseGuards(JwtAuthGuard)
     @Post('/register')
-    async create(@Body() boardDto: CreateBoardDto,@CurrentUser() user) {
+    async create(@Body() boardDto: CreateBoardDto) {
         return await this.boardService.register(boardDto);
     }
 
