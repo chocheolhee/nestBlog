@@ -12,10 +12,12 @@ export class AuthService {
         @InjectRepository(User)
         private userRepository: Repository<User>,
         private jwtService: JwtService
-    ) {}
+    ) {
+    }
 
     async jwtLogin(data: LoginRequestDto) {
-        const isUser = await this.userRepository.findOneBy({email: data.email});
+
+       const isUser = await this.userRepository.findOneBy({email: data.email});
 
         /**
          * 해당하는 유저 이메일 체크
@@ -36,10 +38,10 @@ export class AuthService {
             throw new UnauthorizedException('이메일과 비밀번호를 확인해주세요.')
         }
 
-        const payload={email: data.email, sub: isUser.id}
+        const payload = {email: data.email, sub: isUser.id}
 
-        return{
-            token: this.jwtService.sign(payload,{secret:process.env.JWT_SECRET}),
+        return {
+            token: this.jwtService.sign(payload, {secret: process.env.JWT_SECRET}),
         }
     }
 }

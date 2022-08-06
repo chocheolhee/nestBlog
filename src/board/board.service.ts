@@ -4,6 +4,7 @@ import {Repository} from "typeorm";
 import {Board} from "./board.entity";
 import {CreateBoardDto} from "./dto/createBoardDto";
 import {UpdateBoardDto} from "./dto/updateBoardDto";
+import {Request} from "express";
 
 @Injectable()
 export class BoardService {
@@ -35,6 +36,7 @@ export class BoardService {
      * 게시글 저장
      */
     async register(boardDto: CreateBoardDto): Promise<Board> {
+
         return await this.boardRepository.save(boardDto);
     }
 

@@ -6,8 +6,8 @@ import {
     Param,
     ParseIntPipe,
     Patch,
-    Post,
-    UseFilters,
+    Post, Req, UnauthorizedException,
+    UseFilters, UseGuards,
     UseInterceptors
 } from '@nestjs/common';
 import {SuccessInterceptor} from "../common/interceptor/success.interceptor";
@@ -17,6 +17,8 @@ import {Board} from "./board.entity";
 import {CreateBoardDto} from "./dto/createBoardDto";
 import {HttpExceptionFilter} from "../common/exception/http-exception.filter";
 import {UpdateBoardDto} from "./dto/updateBoardDto";
+import {JwtAuthGuard} from "../auth/jwt/jwt.guard";
+import {Request} from "express";
 
 @Controller('api/board')
 @UseFilters(HttpExceptionFilter)
@@ -46,6 +48,7 @@ export class BoardController {
     /**
      * 게시글 저장
      */
+    @UseGuards(JwtAuthGuard)
     @Post('/register')
     async create(@Body() boardDto: CreateBoardDto) {
         return await this.boardService.register(boardDto);
