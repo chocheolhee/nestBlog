@@ -2,12 +2,12 @@ import {
     Body,
     Controller,
     Delete,
-    Get, NotFoundException,
+    Get, Logger, NotFoundException,
     Param,
     ParseIntPipe,
     Patch,
-    Post,
-    UseFilters,
+    Post, Req, Res,
+    UseFilters, UseGuards,
     UseInterceptors
 } from '@nestjs/common';
 import {CreateUserDto} from './dto/createUserDto';
@@ -17,11 +17,14 @@ import {HttpExceptionFilter} from "../common/exception/http-exception.filter";
 import {SuccessInterceptor} from "../common/interceptor/success.interceptor";
 import {AuthService} from "../auth/auth.service";
 import {LoginRequestDto} from "../auth/dto/login.request.dto";
+import {request, Request, Response} from "express";
+import {JwtAuthGuard} from "../auth/jwt/jwt.guard";
 
 @Controller('api/user')
 @UseFilters(HttpExceptionFilter)
 @UseInterceptors(SuccessInterceptor)
 export class UsersController {
+
     constructor(private usersService: UsersService,
                 private authService: AuthService
     ) {
@@ -72,6 +75,33 @@ export class UsersController {
      */
     @Post("/login")
     async login(@Body() data: LoginRequestDto) {
-        return await this.authService.jwtLogin(data);
+        return await this.authService.validateUser(data);
+
+        /**
+         * Todo jwt Cookie 적용
+         */
+        // const jwt = await this.authService.validateUser(data);
+        // res.setHeader('Authorization', 'Bearer ' + jwt.token);
+        // res.cookie('jwt', jwt.token, {
+        //     httpOnly: true,
+        //     maxAge: 24 * 60 * 60 * 1000 //1 day
+        // });
+        //
+        // return res.send({
+        //     message: 'success'
+        // })
     }
+
+    /**
+     * Todo 로그아웃
+     */
+    // @Post('/logout')
+    // logout(@Req() req: Request, @Res() res: Response): any {
+    //     res.cookie('jwt', '', {
+    //         maxAge: 0
+    //     })
+    //     return res.send({
+    //         message: 'success'
+    //     })
+    // }
 }

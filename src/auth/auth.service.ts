@@ -15,7 +15,7 @@ export class AuthService {
     ) {
     }
 
-    async jwtLogin(data: LoginRequestDto) {
+    async validateUser(data: LoginRequestDto) {
 
        const isUser = await this.userRepository.findOneBy({email: data.email});
 
