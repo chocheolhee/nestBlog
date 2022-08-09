@@ -19,12 +19,11 @@ export class Board extends BaseEntity {
 
     @ManyToOne(() => User, (user) => user.boards,
         {
-            onDelete: 'SET NULL',
-            onUpdate: 'CASCADE'
+            onDelete: 'CASCADE'
         })
     @JoinColumn([{
         name: 'user_id',
         referencedColumnName: 'id',
     }])
-    user: User;
+    user:User
 }

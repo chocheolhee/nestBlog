@@ -19,14 +19,20 @@ export class BoardService {
      * 전체 게시글 조회
      */
     findAll(): Promise<Board[]> {
-        return this.boardRepository.find();
+        return this.boardRepository.createQueryBuilder('board')
+            .leftJoinAndSelect('board.user', 'user')
+            .orderBy('board.id', "DESC")
+            .getMany();
     }
 
     /**
      * 게시글 단건 조회
      */
     async findOne(id: number): Promise<Board> {
-        const isBoard = await this.boardRepository.findOneBy({id: id});
+        const isBoard = await this.boardRepository.createQueryBuilder('board')
+            .leftJoinAndSelect('board.user', 'user')
+            .where('board.id = :id', {id})
+            .getOne();
 
         if (!isBoard) {
             throw new UnauthorizedException('게시글이 없습니다');
@@ -37,9 +43,17 @@ export class BoardService {
     /**
      * 게시글 저장
      */
-    async register(boardDto: CreateBoardDto): Promise<Board> {
+    async register(user: User, boardDto: CreateBoardDto): Promise<Board> {
+        const {title, description, content} = boardDto;
+        const userId = user[0].id;
 
-        return await this.boardRepository.save(boardDto);
+        const board = new Board();
+        board.title = title;
+        board.description = description;
+        board.content = content;
+        board.user = userId;
+
+        return await this.boardRepository.save(board);
     }
 
     /**

@@ -19,6 +19,8 @@ import {CreateBoardDto} from "./dto/createBoardDto";
 import {HttpExceptionFilter} from "../common/exception/http-exception.filter";
 import {UpdateBoardDto} from "./dto/updateBoardDto";
 import {JwtAuthGuard} from "../auth/jwt/jwt.guard";
+import {CurrentUser} from "../common/decorators/user.decorator";
+import {User} from "../users/user.entity";
 
 @Controller('api/board')
 @UseFilters(HttpExceptionFilter)
@@ -50,9 +52,8 @@ export class BoardController {
      */
     @UseGuards(JwtAuthGuard)
     @Post('/register')
-    async create(@Body() boardDto: CreateBoardDto) {
-
-        return await this.boardService.register(boardDto);
+    async create(@CurrentUser() user: User, @Body() boardDto: CreateBoardDto) {
+        return await this.boardService.register(user, boardDto);
     }
 
     /**
