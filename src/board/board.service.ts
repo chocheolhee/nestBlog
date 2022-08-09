@@ -4,12 +4,14 @@ import {Repository} from "typeorm";
 import {Board} from "./board.entity";
 import {CreateBoardDto} from "./dto/createBoardDto";
 import {UpdateBoardDto} from "./dto/updateBoardDto";
-import {Request} from "express";
+import {User} from "../users/user.entity";
 
 @Injectable()
 export class BoardService {
     constructor(@InjectRepository(Board)
-                private boardRepository: Repository<Board>
+                private boardRepository: Repository<Board>,
+                @InjectRepository(User)
+                private userRepository: Repository<User>
     ) {
     }
 
@@ -44,7 +46,9 @@ export class BoardService {
      * 게시글 수정
      */
     async updateBoard(id: number, updateBoardDto: UpdateBoardDto): Promise<void> {
-        const findBoard = await this.boardRepository.findOneBy({id: id});
+        const findBoard = await this.boardRepository.findOne({
+            where: {id: id}
+        })
 
         if (!findBoard) {
             throw new NotFoundException(`'게시글이 없습니다'`)
@@ -65,4 +69,8 @@ export class BoardService {
 
         await this.boardRepository.delete(id);
     }
+
+    /**
+     * Todo 이미지 업로드
+     */
 }

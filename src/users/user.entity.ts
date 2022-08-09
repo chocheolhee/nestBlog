@@ -1,8 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {BaseEntity} from "../common/baseEntity/base.entity";
+import {Board} from "../board/board.entity";
+import {Exclude} from "class-transformer";
 
 @Entity()
-export class User extends BaseEntity{
+export class User extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -14,5 +16,10 @@ export class User extends BaseEntity{
     email: string;
 
     @Column({type: 'varchar', nullable: false})
+    @Exclude()
     password: string;
+
+    @OneToMany(() => Board, (board) => board.user,
+        {cascade: true})
+    boards: Board[];
 }

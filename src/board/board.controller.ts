@@ -6,7 +6,7 @@ import {
     Param,
     ParseIntPipe,
     Patch,
-    Post, Req, Res, UnauthorizedException,
+    Post,
     UseFilters,
     UseGuards,
     UseInterceptors
@@ -19,8 +19,6 @@ import {CreateBoardDto} from "./dto/createBoardDto";
 import {HttpExceptionFilter} from "../common/exception/http-exception.filter";
 import {UpdateBoardDto} from "./dto/updateBoardDto";
 import {JwtAuthGuard} from "../auth/jwt/jwt.guard";
-import {Request, Response} from "express";
-import {CurrentUser} from "../common/decorators/user.decorator";
 
 @Controller('api/board')
 @UseFilters(HttpExceptionFilter)
@@ -53,6 +51,7 @@ export class BoardController {
     @UseGuards(JwtAuthGuard)
     @Post('/register')
     async create(@Body() boardDto: CreateBoardDto) {
+
         return await this.boardService.register(boardDto);
     }
 
@@ -72,4 +71,7 @@ export class BoardController {
         return await this.boardService.deleteBoard(id);
     }
 
+    /**
+     * Todo 이미지 업로드
+     */
 }

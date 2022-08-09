@@ -1,8 +1,9 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn} from "typeorm";
 import {BaseEntity} from "../common/baseEntity/base.entity";
+import {User} from "../users/user.entity";
 
 @Entity()
-export class Board extends BaseEntity{
+export class Board extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -16,4 +17,14 @@ export class Board extends BaseEntity{
     @Column({type: 'varchar'})
     content: string;
 
+    @ManyToOne(() => User, (user) => user.boards,
+        {
+            onDelete: 'SET NULL',
+            onUpdate: 'CASCADE'
+        })
+    @JoinColumn([{
+        name: 'user_id',
+        referencedColumnName: 'id',
+    }])
+    user: User;
 }

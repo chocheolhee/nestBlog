@@ -76,13 +76,9 @@ export class UsersController {
     async login(@Body() data: LoginRequestDto,
                 @Res({passthrough: true}) res: Response
     ) {
-        // Bearer Token jwt
-        // return await this.authService.validateUser(data);
         const jwt = await this.authService.validateUser(data)
         res.cookie('jwt', jwt.token, {httpOnly: true})
         return jwt;
-
-
     }
 
     @Post('/logout')
