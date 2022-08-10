@@ -1,6 +1,7 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn} from "typeorm";
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn, OneToMany} from "typeorm";
 import {BaseEntity} from "../common/baseEntity/base.entity";
 import {User} from "../users/user.entity";
+import {Comment} from "../comments/comments.entity";
 
 @Entity()
 export class Board extends BaseEntity {
@@ -25,5 +26,9 @@ export class Board extends BaseEntity {
         name: 'user_id',
         referencedColumnName: 'id',
     }])
-    user:User
+    user: User
+
+    @OneToMany(() => Comment, (comment) => comment.board,
+        {cascade: true})
+    comments: Comment[]
 }
