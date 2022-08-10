@@ -1,6 +1,6 @@
 import {Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import {DataSource, Repository} from "typeorm";
 import {Board} from "./board.entity";
 import {CreateBoardDto} from "./dto/createBoardDto";
 import {UpdateBoardDto} from "./dto/updateBoardDto";
@@ -11,7 +11,8 @@ export class BoardService {
     constructor(@InjectRepository(Board)
                 private boardRepository: Repository<Board>,
                 @InjectRepository(User)
-                private userRepository: Repository<User>
+                private userRepository: Repository<User>,
+                private dataSource: DataSource
     ) {
     }
 
@@ -44,16 +45,28 @@ export class BoardService {
      * 게시글 저장
      */
     async register(user: User, boardDto: CreateBoardDto): Promise<Board> {
-        const {title, description, content} = boardDto;
-        const userId = user[0].id;
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
 
-        const board = new Board();
-        board.title = title;
-        board.description = description;
-        board.content = content;
-        board.user = userId;
+        try {
+            const {title, description, content} = boardDto;
+            const userId = user[0].id;
 
-        return await this.boardRepository.save(board);
+            const board = new Board();
+            board.title = title;
+            board.description = description;
+            board.content = content;
+            board.user = userId;
+
+            const resultBoard = await queryRunner.manager.save(board);
+            await queryRunner.commitTransaction();
+            return resultBoard;
+        } catch (err) {
+            await queryRunner.rollbackTransaction();
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     /**
