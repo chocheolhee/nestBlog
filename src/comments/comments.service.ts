@@ -11,6 +11,10 @@ import {Board} from "../board/board.entity";
 export class CommentsService {
     constructor(@InjectRepository(Comment)
                 private commentRepository: Repository<Comment>,
+                @InjectRepository(Board)
+                private boardRepository: Repository<Board>,
+                @InjectRepository(User)
+                private userRepository: Repository<User>,
                 private dataSource: DataSource
     ) {
     }
@@ -37,7 +41,7 @@ export class CommentsService {
             .getOne();
 
         if (!isComment) {
-            throw new UnauthorizedException('게시글이 없습니다');
+            throw new UnauthorizedException('댓글이 없습니다');
         }
         return isComment;
     }
@@ -45,25 +49,35 @@ export class CommentsService {
     /**
      * 댓글 저장
      */
-    async register(user: User, commentDto: CreateCommentDto) {
+    async register(user: User, boardId: number, commentDto: CreateCommentDto) {
 
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
         try {
-            const {content, boardId} = commentDto;
+            const {content} = commentDto;
             const userId = user[0].id;
+
+            const isBoard = await this.boardRepository.findOne({
+                where: {id: boardId},
+            });
+
+            const isUser = await this.userRepository.findOne({
+                where: {id: userId},
+            });
 
             const comment = new Comment();
             comment.content = content;
-            comment.board = boardId;
-            comment.user = userId;
+            comment.board = isBoard;
+            comment.user = isUser;
 
             const resultBoard = await queryRunner.manager.save(comment);
             await queryRunner.commitTransaction();
             return resultBoard;
         } catch (err) {
+            console.log(err);
             await queryRunner.rollbackTransaction();
+            throw new NotFoundException('회원이 없습니다');
         } finally {
             await queryRunner.release();
         }
@@ -78,7 +92,7 @@ export class CommentsService {
         })
 
         if (!findComment) {
-            throw new NotFoundException(`'게시글이 없습니다'`)
+            throw new NotFoundException('댓글이 없습니다')
         }
 
         await this.commentRepository.update(id, updateCommentDto);
@@ -88,10 +102,12 @@ export class CommentsService {
      * 댓글 삭제
      */
     async deleteComment(id: number) {
-        const findBoard = await this.commentRepository.findOneBy({id: id});
+        const findComment = await this.commentRepository.findOne({
+            where: {id: id}
+        });
 
-        if (!findBoard) {
-            throw new NotFoundException('게시글이 없습니다')
+        if (!findComment) {
+            throw new NotFoundException('댓글이 없습니다')
         }
 
         await this.commentRepository.delete(id);

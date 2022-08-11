@@ -53,11 +53,16 @@ export class BoardService {
             const {title, description, content} = boardDto;
             const userId = user[0].id;
 
+            const findUser = await this.userRepository.findOne({
+                where: userId,
+                }
+            );
+
             const board = new Board();
             board.title = title;
             board.description = description;
             board.content = content;
-            board.user = userId;
+            board.user = findUser;
 
             const resultBoard = await queryRunner.manager.save(board);
             await queryRunner.commitTransaction();

@@ -20,7 +20,6 @@ import {Comment} from "./comments.entity";
 import {CreateCommentDto} from "./dto/create-comment.dto";
 import {UpdateCommentDto} from "./dto/update-comment.dto";
 import {User} from "../users/user.entity";
-import {Board} from "../board/board.entity";
 
 @Controller('api/comment')
 @UseFilters(HttpExceptionFilter)
@@ -39,7 +38,7 @@ export class CommentsController {
     }
 
     /**
-     * 게시글 단건 조회
+     * 댓글 단건 조회
      */
     @Get('/:id')
     async findOne(@Param("id", ParseIntPipe) id: number): Promise<Comment> {
@@ -50,9 +49,9 @@ export class CommentsController {
      * 댓글 저장
      */
     @UseGuards(JwtAuthGuard)
-    @Post('/register')
-    async create(@CurrentUser() user: User, @Body() commentDto: CreateCommentDto) {
-        return await this.commentsService.register(user, commentDto);
+    @Post('/:boardId/register')
+    async create(@CurrentUser() user: User, @Param('boardId', ParseIntPipe) boardId: number, @Body() commentDto: CreateCommentDto) {
+        return await this.commentsService.register(user, boardId, commentDto);
     }
 
     /**

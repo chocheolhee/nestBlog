@@ -37,7 +37,7 @@ export class UsersService {
     async register(userDto: CreateUserDto): Promise<User> {
         const isEmail = await this.userRepository.findOneBy({email: userDto.email});
 
-        if (!(isEmail === null)) {
+        if (isEmail) {
             throw new NotFoundException('이미 회원가입된 이메일입니다.')
         }
 
