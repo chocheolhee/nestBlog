@@ -44,7 +44,7 @@ export class BoardService {
     /**
      * 게시글 저장
      */
-    async register(user: User, boardDto: CreateBoardDto): Promise<Board> {
+    async register(user: User, boardDto: CreateBoardDto) {
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();

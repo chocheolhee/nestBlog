@@ -11,6 +11,7 @@ export class CreateCommentDto {
      * 상세페이지 board PK 값으로 url 설정
      * ex) localhost:5000/api/board/83 <-- input hidden 값
      */
-    @IsNumber()
-    boardId :number
+
+    @IsNotEmpty()
+    boardId;
 }

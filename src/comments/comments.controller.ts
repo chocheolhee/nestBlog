@@ -20,6 +20,7 @@ import {Comment} from "./comments.entity";
 import {CreateCommentDto} from "./dto/create-comment.dto";
 import {UpdateCommentDto} from "./dto/update-comment.dto";
 import {User} from "../users/user.entity";
+import {Board} from "../board/board.entity";
 
 @Controller('api/comment')
 @UseFilters(HttpExceptionFilter)
@@ -38,7 +39,7 @@ export class CommentsController {
     }
 
     /**
-     * 댓글 단건 조회
+     * 게시글 단건 조회
      */
     @Get('/:id')
     async findOne(@Param("id", ParseIntPipe) id: number): Promise<Comment> {
