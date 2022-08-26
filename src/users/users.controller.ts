@@ -7,7 +7,7 @@ import {
     ParseIntPipe,
     Patch,
     Post, Res,
-    UseFilters,
+    UseFilters, UseGuards,
     UseInterceptors
 } from '@nestjs/common';
 import {CreateUserDto} from './dto/createUserDto';
@@ -18,6 +18,7 @@ import {SuccessInterceptor} from "../common/interceptor/success.interceptor";
 import {AuthService} from "../auth/auth.service";
 import {LoginRequestDto} from "../auth/dto/login.request.dto";
 import {Response} from 'express'
+import {JwtAuthGuard} from "../auth/jwt/jwt.guard";
 
 @Controller('api/user')
 @UseFilters(HttpExceptionFilter)

@@ -7,6 +7,7 @@ import {
     ParseIntPipe,
     Patch,
     Post,
+    UploadedFiles,
     UseFilters,
     UseGuards,
     UseInterceptors
@@ -21,6 +22,8 @@ import {UpdateBoardDto} from "./dto/updateBoardDto";
 import {JwtAuthGuard} from "../auth/jwt/jwt.guard";
 import {CurrentUser} from "../common/decorators/user.decorator";
 import {User} from "../users/user.entity";
+import {FilesInterceptor} from "@nestjs/platform-express";
+import {multerOptions} from "../common/utils/multer.options";
 
 @Controller('api/board')
 @UseFilters(HttpExceptionFilter)
@@ -75,4 +78,10 @@ export class BoardController {
     /**
      * Todo 이미지 업로드
      */
+    @Post('/upload')
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(FilesInterceptor('image', 10, multerOptions("upload")))
+    uploadFile(@UploadedFiles() files: Array<Express.Multer.File>, @CurrentUser() user) {
+        return this.boardService.uploadImg(user, files);
+    }
 }

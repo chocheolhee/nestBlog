@@ -77,7 +77,7 @@ export class CommentsService {
         } catch (err) {
             console.log(err);
             await queryRunner.rollbackTransaction();
-            throw new NotFoundException('회원이 없습니다');
+            throw new NotFoundException('게시글이 없습니다');
         } finally {
             await queryRunner.release();
         }

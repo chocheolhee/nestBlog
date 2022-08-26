@@ -15,7 +15,7 @@ import {UsersModule} from "../users/users.module";
             secret: process.env.JWT_SECRET,
             signOptions: {expiresIn: '1y'},
         }),
-        forwardRef(()=> UsersModule)
+        forwardRef(() => UsersModule)
     ],
     providers: [AuthService, JwtStrategy],
     exports: [AuthService],

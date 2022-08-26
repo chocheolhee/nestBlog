@@ -3,6 +3,7 @@ import {BaseEntity} from "../common/baseEntity/base.entity";
 import {Board} from "../board/board.entity";
 import {Exclude} from "class-transformer";
 import {Comment} from "../comments/comments.entity";
+import {IsString} from "class-validator";
 
 @Entity()
 export class User extends BaseEntity {
@@ -19,6 +20,10 @@ export class User extends BaseEntity {
     @Column({type: 'varchar', nullable: false})
     @Exclude()
     password: string;
+
+    @Column()
+    @IsString()
+    imageUrl: string;
 
     @OneToMany(() => Board, (board) => board.user,
         {cascade: true})

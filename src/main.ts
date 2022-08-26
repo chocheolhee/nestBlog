@@ -4,6 +4,7 @@ import {ClassSerializerInterceptor, Logger, ValidationPipe} from "@nestjs/common
 import {HttpExceptionFilter} from "./common/exception/http-exception.filter";
 import * as cookieParser from 'cookie-parser';
 import {NestExpressApplication} from "@nestjs/platform-express";
+import * as path from "path";
 
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -16,7 +17,14 @@ async function bootstrap() {
     app.useGlobalInterceptors(
         new ClassSerializerInterceptor(app.get(Reflector))
     );
+    app.enableCors({
+        origin: true,
+        credentials: true,
+    })
 
+    app.useStaticAssets(path.join(__dirname, './common', 'uploads'),{
+        prefix: '/media',
+    });
     // ConfigModule .env 설정파일 적용
     // app.module 에서 ConfigModule import 해야 함.
     const port = process.env.NODE_SERVER_PORT;

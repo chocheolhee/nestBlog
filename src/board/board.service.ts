@@ -54,7 +54,7 @@ export class BoardService {
             const userId = user[0].id;
 
             const findUser = await this.userRepository.findOne({
-                where: userId,
+                    where: userId,
                 }
             );
 
@@ -98,11 +98,33 @@ export class BoardService {
         if (!findBoard) {
             throw new NotFoundException('게시글이 없습니다')
         }
-
         await this.boardRepository.delete(id);
     }
 
     /**
-     * Todo 이미지 업로드
+     * 이미지 업로드
      */
+    async uploadImg(user: User, files) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            const fileName = `upload/${files[0].filename}`;
+
+            const findUser = await this.userRepository.findOne({
+                where: {id: user[0].id}
+            });
+            console.log('findUser', findUser);
+            findUser.imageUrl = `http://localhost:5000/media/${fileName}`;
+
+            const savedUser = await this.userRepository.save(findUser);
+            console.log('uploadImg & savedUser', savedUser);
+            return savedUser
+        } catch (err) {
+            await queryRunner.rollbackTransaction();
+        } finally {
+            await queryRunner.release();
+        }
+    }
 }
