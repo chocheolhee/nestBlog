@@ -3,14 +3,22 @@ import {NextFunction, Request, Response} from "express";
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
-    private logger = new Logger();
+    private logger = new Logger('HTTP');
 
-    use(req: Request, res: Response, next: NextFunction) {
+    use(request: Request, response: Response, next: NextFunction) {
+        const {ip, method, originalUrl} = request;
+        const userAgent = request.get('user-agent') || '';
 
-        res.on('finish', () => {
-            this.logger.log(`${req.ip} ${req.method} ${res.statusCode}`, req.originalUrl);
+        response.on('finish', () => {
+            const {statusCode} = response;
+            const contentLength = response.get('content-length');
+            this.logger.log(
+                `${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip}`
+            );
         })
-
         next();
     }
 }
+
+
+

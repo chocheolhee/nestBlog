@@ -64,7 +64,8 @@ export class BoardService {
             board.content = content;
             board.user = findUser;
 
-            const resultBoard = await queryRunner.manager.save(board);
+            const resultBoard = await queryRunner.manager.getRepository(Board).save(board);
+
             await queryRunner.commitTransaction();
             return resultBoard;
         } catch (err) {

@@ -28,7 +28,6 @@ import {CommentsModule} from './comments/comments.module';
                 synchronize: true
             })
         }),
-
         UsersModule,
         AuthModule,
         BoardModule,
