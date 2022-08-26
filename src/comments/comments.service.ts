@@ -58,11 +58,11 @@ export class CommentsService {
             const {content} = commentDto;
             const userId = user[0].id;
 
-            const isBoard = await this.boardRepository.findOne({
+            const isBoard = await queryRunner.manager.getRepository(Board).findOne({
                 where: {id: boardId},
             });
 
-            const isUser = await this.userRepository.findOne({
+            const isUser = await queryRunner.manager.getRepository(User).findOne({
                 where: {id: userId},
             });
 

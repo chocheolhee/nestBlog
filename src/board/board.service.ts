@@ -53,7 +53,7 @@ export class BoardService {
             const {title, description, content} = boardDto;
             const userId = user[0].id;
 
-            const findUser = await this.userRepository.findOne({
+            const findUser = await queryRunner.manager.getRepository(User).findOne({
                     where: userId,
                 }
             );
@@ -112,13 +112,13 @@ export class BoardService {
         try {
             const fileName = `upload/${files[0].filename}`;
 
-            const findUser = await this.userRepository.findOne({
+            const findUser = await queryRunner.manager.getRepository(User).findOne({
                 where: {id: user[0].id}
             });
             console.log('findUser', findUser);
             findUser.imageUrl = `http://localhost:5000/media/${fileName}`;
 
-            const savedUser = await this.userRepository.save(findUser);
+            const savedUser = await queryRunner.manager.getRepository(User).save(findUser);
             console.log('uploadImg & savedUser', savedUser);
             return savedUser
         } catch (err) {
